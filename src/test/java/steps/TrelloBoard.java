@@ -10,14 +10,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-
-public class TrelloList {
-
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class TrelloBoard {
     private String id;
     private String name;
     private Boolean closed;
     private Integer pos;
-    private String idBoard;
     private Limits limits;
 
 }
