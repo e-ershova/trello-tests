@@ -1,7 +1,7 @@
-package modules;
+package models.board;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.*;
-import modules.Limits;
 
 @Getter
 @Setter
@@ -11,13 +11,10 @@ import modules.Limits;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 
-public class TrelloList {
-
+public class Memberships {
     private String id;
-    private String name;
-    private Boolean closed;
-    private Integer pos;
-    private String idBoard;
-    private Limits limits;
-
+    private String idMember;
+    private String memberType;
+    private Boolean unconfirmed;
+    private Boolean deactivated;
 }

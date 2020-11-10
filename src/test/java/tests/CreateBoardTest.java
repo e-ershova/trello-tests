@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.apache.commons.lang3.RandomStringUtils;
-import modules.board.TrelloBoard;
+import models.board.TrelloBoard;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,7 +1,7 @@
 package tests;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import modules.TrelloList;
+import models.list.TrelloList;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;

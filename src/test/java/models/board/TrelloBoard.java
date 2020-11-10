@@ -1,6 +1,7 @@
-package modules.board;
+package models.board;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
+import models.Limits;
 
 import java.util.Map;
 
@@ -24,8 +25,8 @@ public class TrelloBoard {
     private String url;
     private String shortUrl;
     private Prefs prefs;
-    private Map<String, String> labelNames;
+    private LabelNames labelNames;
     private Organization organization;
-    private Map<String, String> limits;
+    private Limits limits;
 
 }
