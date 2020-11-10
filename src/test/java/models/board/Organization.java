@@ -2,6 +2,8 @@ package models.board;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -13,5 +15,5 @@ public class Organization {
     private String id;
     private String name;
     private String displayName;
-    private Memberships memberships;
+    private List<Memberships> memberships;
 }
