@@ -1,7 +1,7 @@
-package steps;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+package modules;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
+import modules.Limits;
 
 @Getter
 @Setter
@@ -10,12 +10,14 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class TrelloBoard {
+
+public class TrelloList {
+
     private String id;
     private String name;
     private Boolean closed;
     private Integer pos;
+    private String idBoard;
     private Limits limits;
 
 }

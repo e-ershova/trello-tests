@@ -1,8 +1,10 @@
+package tests;
+
 import org.junit.jupiter.api.Test;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.apache.commons.lang3.RandomStringUtils;
-import steps.TrelloBoard;
+import modules.board.TrelloBoard;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +24,7 @@ public class CreateBoardTest {
                         .queryParam("name", boardName)
                         .contentType(ContentType.JSON)
                         .log().all()
-                        .when()
+                      //  .when()
                         .post()
                         .then()
                         .log().all()
@@ -30,6 +32,7 @@ public class CreateBoardTest {
                         .extract().response();
 
         TrelloBoard boardFromPostResponse = createBoardResponse.as(TrelloBoard.class);
+
 
         TrelloBoard boardFromGetResponse =
                 given()
@@ -42,7 +45,7 @@ public class CreateBoardTest {
                         .when()
                         .get("{boardId}")
                         .then()
-                        .log().all()
+                        .log().body()
                         .statusCode(200)
                         .extract().as(TrelloBoard.class);
 
