@@ -1,14 +1,12 @@
 package tests;
 
-import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
-import io.restassured.specification.RequestSpecification;
-import io.restassured.specification.ResponseSpecification;
-import org.junit.jupiter.api.Test;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.apache.commons.lang3.RandomStringUtils;
+import io.restassured.specification.ResponseSpecification;
 import models.board.TrelloBoard;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,22 +17,16 @@ public class CreateBoardTest extends BaseTest {
     public void test() {
         String boardName = "Scrum board " + RandomStringUtils.random(7, true, true); //используем здесь //генератор случайной строки, чтобы имя каждый раз было уникальным
 
-        RequestSpecBuilder builder = new RequestSpecBuilder();
-        builder.setBaseUri("https://api.trello.com/1/");
-        builder.setBasePath("/boards");
-        builder.addParam("key", "f910238aac21c3539355046cffe2cf07");
-        builder.addParam("token", "d0eb3cbf161a54206c2d9b0369a36b240816bc0226b881dba4c4dc33b2b3a2dc");
-        builder.addParam("name", boardName);
-        builder.setContentType(ContentType.JSON);
-        RequestSpecification requestSpec = builder.build();
-
         ResponseSpecBuilder responseBuilder = new ResponseSpecBuilder();
         responseBuilder.expectStatusCode(200);
         ResponseSpecification responseSpec = responseBuilder.build();
 
         Response createBoardResponse =
                 given()
-                        .spec(requestSpec)
+                        .spec(getBaseSpecification())
+                        .basePath("/boards")
+                        .contentType(ContentType.JSON)
+                        .queryParam("name", boardName)
                         .log().all()
                         .when()
                         .post()
@@ -45,18 +37,12 @@ public class CreateBoardTest extends BaseTest {
 
         TrelloBoard boardFromPostResponse = createBoardResponse.as(TrelloBoard.class);
 
-
-
-
-
         TrelloBoard boardFromGetResponse =
                 given()
-                        .baseUri("https://api.trello.com/1/")
+                        .spec(getBaseSpecification())
                         .basePath("/boards")
                         .log().all()
                         .pathParam("boardId", boardFromPostResponse.getId())
-                        .queryParam("key", "f910238aac21c3539355046cffe2cf07")
-                        .queryParam("token", "d0eb3cbf161a54206c2d9b0369a36b240816bc0226b881dba4c4dc33b2b3a2dc")
                         .when()
                         .get("{boardId}")
                         .then()
