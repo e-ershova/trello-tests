@@ -1,5 +1,9 @@
 package tests;
 
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 import org.junit.jupiter.api.Test;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -9,29 +13,40 @@ import models.board.TrelloBoard;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CreateBoardTest {
+public class CreateBoardTest extends BaseTest {
 
     @Test
     public void test() {
         String boardName = "Scrum board " + RandomStringUtils.random(7, true, true); //используем здесь //генератор случайной строки, чтобы имя каждый раз было уникальным
 
+        RequestSpecBuilder builder = new RequestSpecBuilder();
+        builder.setBaseUri("https://api.trello.com/1/");
+        builder.setBasePath("/boards");
+        builder.addParam("key", "f910238aac21c3539355046cffe2cf07");
+        builder.addParam("token", "d0eb3cbf161a54206c2d9b0369a36b240816bc0226b881dba4c4dc33b2b3a2dc");
+        builder.addParam("name", boardName);
+        builder.setContentType(ContentType.JSON);
+        RequestSpecification requestSpec = builder.build();
+
+        ResponseSpecBuilder responseBuilder = new ResponseSpecBuilder();
+        responseBuilder.expectStatusCode(200);
+        ResponseSpecification responseSpec = responseBuilder.build();
+
         Response createBoardResponse =
                 given()
-                        .baseUri("https://api.trello.com/1/")
-                        .basePath("/boards")
-                        .queryParam("key", "f910238aac21c3539355046cffe2cf07")
-                        .queryParam("token", "d0eb3cbf161a54206c2d9b0369a36b240816bc0226b881dba4c4dc33b2b3a2dc")
-                        .queryParam("name", boardName)
-                        .contentType(ContentType.JSON)
+                        .spec(requestSpec)
                         .log().all()
-                      //  .when()
+                        .when()
                         .post()
                         .then()
                         .log().all()
-                        .statusCode(200)
+                        .spec(responseSpec)
                         .extract().response();
 
         TrelloBoard boardFromPostResponse = createBoardResponse.as(TrelloBoard.class);
+
+
+
 
 
         TrelloBoard boardFromGetResponse =
