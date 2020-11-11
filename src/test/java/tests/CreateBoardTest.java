@@ -24,19 +24,20 @@ public class CreateBoardTest {
                 .addQueryParam("key", "f910238aac21c3539355046cffe2cf07")
                 .addQueryParam("token", "d0eb3cbf161a54206c2d9b0369a36b240816bc0226b881dba4c4dc33b2b3a2dc");
 
-        RequestSpecBuilder boardRequestBuilder = new RequestSpecBuilder()
+        RequestSpecification boardSpec = new RequestSpecBuilder()
                 .addRequestSpecification(mainBuilder.build())
                 .setBasePath("/boards")
                 .setContentType(ContentType.JSON)
-                .addQueryParam("name", boardName);
+                .addQueryParam("name", boardName)
+                .build();
 
-        ResponseSpecBuilder responseBuilder = new ResponseSpecBuilder()
-                .expectStatusCode(200);
-        ResponseSpecification responseSpec = responseBuilder.build();
+        ResponseSpecification responseSpec = new ResponseSpecBuilder()
+                .expectStatusCode(200)
+                .build();
 
         Response createBoardResponse =
                 given()
-                        .spec(boardRequestBuilder.build())
+                        .spec(boardSpec)
                         .log().all()
                         .post()
                         .then()
@@ -48,7 +49,7 @@ public class CreateBoardTest {
 
         TrelloBoard boardFromGetResponse =
                 given()
-                        .spec(boardRequestBuilder.build())
+                        .spec(boardSpec)
                         .log().all()
                         .pathParam("boardId", boardFromPostResponse.getId())
                         .get("{boardId}")
