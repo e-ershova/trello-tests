@@ -1,5 +1,6 @@
 package tests;
 
+import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
@@ -19,13 +20,15 @@ public class CreateBoardTest {
     public void test() {
         String boardName = "Scrum board " + RandomStringUtils.random(7, true, true); //используем здесь //генератор случайной строки, чтобы имя каждый раз было уникальным
 
-        RequestSpecBuilder mainBuilder = new RequestSpecBuilder()
-                .setBaseUri("https://api.trello.com/1/")
+        RestAssured.baseURI ="https://api.trello.com/1/";
+
+        RequestSpecification mainSpec = new RequestSpecBuilder()
                 .addQueryParam("key", "f910238aac21c3539355046cffe2cf07")
-                .addQueryParam("token", "d0eb3cbf161a54206c2d9b0369a36b240816bc0226b881dba4c4dc33b2b3a2dc");
+                .addQueryParam("token", "d0eb3cbf161a54206c2d9b0369a36b240816bc0226b881dba4c4dc33b2b3a2dc")
+                .build();
 
         RequestSpecification boardSpec = new RequestSpecBuilder()
-                .addRequestSpecification(mainBuilder.build())
+                .addRequestSpecification(mainSpec)
                 .setBasePath("/boards")
                 .setContentType(ContentType.JSON)
                 .addQueryParam("name", boardName)
