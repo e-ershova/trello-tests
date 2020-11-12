@@ -1,8 +1,12 @@
 package tests;
 
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.filter.log.LogDetail;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -10,6 +14,8 @@ import io.restassured.specification.ResponseSpecification;
 import models.board.TrelloBoard;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,6 +31,8 @@ public class CreateBoardTest {
         RequestSpecification mainSpec = new RequestSpecBuilder()
                 .addQueryParam("key", "f910238aac21c3539355046cffe2cf07")
                 .addQueryParam("token", "d0eb3cbf161a54206c2d9b0369a36b240816bc0226b881dba4c4dc33b2b3a2dc")
+                .addFilters(Arrays.asList(new RequestLoggingFilter(LogDetail.BODY), new ResponseLoggingFilter(LogDetail.BODY)))
+                .addFilter(new AllureRestAssured())
                 .build();
 
         RequestSpecification boardSpec = new RequestSpecBuilder()
@@ -34,6 +42,7 @@ public class CreateBoardTest {
                 .addQueryParam("name", boardName)
                 .build();
 
+
         ResponseSpecification responseSpec = new ResponseSpecBuilder()
                 .expectStatusCode(200)
                 .build();
@@ -41,10 +50,10 @@ public class CreateBoardTest {
         Response createBoardResponse =
                 given()
                         .spec(boardSpec)
-                        .log().all()
+                    //    .log().all()
                         .post()
                         .then()
-                        .log().all()
+                    //    .log().all()
                         .spec(responseSpec)
                         .extract().response();
 
@@ -53,11 +62,11 @@ public class CreateBoardTest {
         TrelloBoard boardFromGetResponse =
                 given()
                         .spec(boardSpec)
-                        .log().all()
+                     //   .log().all()
                         .pathParam("boardId", boardFromPostResponse.getId())
                         .get("{boardId}")
                         .then()
-                        .log().body()
+                      //  .log().body()
                         .spec(responseSpec)
                         .extract().as(TrelloBoard.class);
 
