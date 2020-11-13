@@ -1,5 +1,6 @@
 package tests;
 
+import io.restassured.RestAssured;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.response.Response;
 import io.restassured.specification.ResponseSpecification;
@@ -21,34 +22,38 @@ public class CreateBoardTest extends BaseTest{
     @MethodSource("boardNames")
     public void test(String boardName) {
 
-        ResponseSpecification responseSpec = new ResponseSpecBuilder()
-                .expectStatusCode(200)
-                .build();
-
-        Response createBoardResponse =
+        TrelloBoard boardFromPostResponse =
                 given()
-                        .spec(boardSpecification())
+                        .spec(boardSpec)
                         .queryParam("name", boardName)
                         .post()
                         .then()
-                        .spec(responseSpec)
-                        .extract().response();
-
-        TrelloBoard boardFromPostResponse = createBoardResponse.as(TrelloBoard.class);
+                        .spec(RestAssured.responseSpecification)
+                        .extract().as(TrelloBoard.class);
 
         TrelloBoard boardFromGetResponse =
                 given()
-                        .spec(boardSpecification())
+                        .spec(boardSpec)
                         .pathParam("boardId", boardFromPostResponse.getId())
                         .get("{boardId}")
                         .then()
-                        .spec(responseSpec)
+                        .spec(RestAssured.responseSpecification)
                         .extract().as(TrelloBoard.class);
 
         assertThat(boardFromPostResponse.getName())
                 .as("Name from post response should be equal to name from get response and name from MethodSource")
                 .isEqualTo(boardFromGetResponse.getName())
                 .isEqualTo(boardName);
+
+        Response deleteBoardResponse =
+                given()
+                        .spec(boardSpec)
+                        .pathParam("boardId", boardFromPostResponse.getId())
+                        .delete("{boardId}")
+                        .then()
+                        .spec(RestAssured.responseSpecification)
+                        .extract().response();
+
     }
 
     static Stream<Arguments> boardNames() {
