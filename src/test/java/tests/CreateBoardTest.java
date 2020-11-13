@@ -70,7 +70,7 @@ public class CreateBoardTest {
                         .extract().as(TrelloBoard.class);
 
         assertThat(boardFromPostResponse.getName())
-                .as("Name from post response should be equal to name from get response")
+                .as("Name from post response should be equal to name from get response and name from MethodSource")
                 .isEqualTo(boardFromGetResponse.getName())
                 .isEqualTo(boardName);
     }
