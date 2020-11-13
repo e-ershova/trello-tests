@@ -81,7 +81,9 @@ public class CreateBoardTest {
         String boardName1 = "Scrum board " + random;
         String boardName2 = "Список покупок " + random;
         String boardName3 = "2128506 " + random;
-        String boardName4 = "XTr2LX1CAZUsy0KVxx485WB86J69RUeDeiFYDqK2MjBmzzatSqEMSgZlBrcBXrRX6Hbt9FZeaKm32q8Wwz9rr9Mr5EO9otsqscQ50 " + random; //101 символ
+        String boardName4 = "XTr2LX1CAZUsy0KVxx485WB86J69RUeDeiFYDqK2MjBmzzatSqEMSgZlBrcBXrRX6Hbt9FZeaKm32q8Wwz9rr9Mr5EO9otsqscQ50 " + random;
+        //108 символов, если с пробелом и рандомом
+
 
         return Stream.of(
                 arguments(boardName1),
