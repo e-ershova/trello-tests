@@ -43,9 +43,7 @@ public class CreateBoardTest {
                 .addRequestSpecification(mainSpec)
                 .setBasePath("/boards")
                 .setContentType(ContentType.JSON)
-                .addQueryParam("name", boardName)
                 .build();
-
 
         ResponseSpecification responseSpec = new ResponseSpecBuilder()
                 .expectStatusCode(200)
@@ -54,6 +52,7 @@ public class CreateBoardTest {
         Response createBoardResponse =
                 given()
                         .spec(boardSpec)
+                        .queryParam("name", boardName)
                         .post()
                         .then()
                         .spec(responseSpec)
@@ -71,7 +70,9 @@ public class CreateBoardTest {
                         .extract().as(TrelloBoard.class);
 
         assertThat(boardFromPostResponse.getName())
-                .as("Name from post response should be equal to name from get response").isEqualTo(boardFromGetResponse.getName());
+                .as("Name from post response should be equal to name from get response")
+                .isEqualTo(boardFromGetResponse.getName())
+                .isEqualTo(boardName);
     }
 
     static Stream<Arguments> boardNames() {
@@ -83,7 +84,6 @@ public class CreateBoardTest {
         String boardName3 = "2128506 " + random;
         String boardName4 = "XTr2LX1CAZUsy0KVxx485WB86J69RUeDeiFYDqK2MjBmzzatSqEMSgZlBrcBXrRX6Hbt9FZeaKm32q8Wwz9rr9Mr5EO9otsqscQ50 " + random;
         //108 символов, если с пробелом и рандомом
-
 
         return Stream.of(
                 arguments(boardName1),
