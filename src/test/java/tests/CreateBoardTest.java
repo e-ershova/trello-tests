@@ -28,7 +28,7 @@ public class CreateBoardTest extends BaseTest{
                         .queryParam("name", boardName)
                         .post()
                         .then()
-                        .spec(RestAssured.responseSpecification)
+                        .spec(responseSpecification)
                         .extract().as(TrelloBoard.class);
 
         TrelloBoard boardFromGetResponse =
@@ -37,7 +37,7 @@ public class CreateBoardTest extends BaseTest{
                         .pathParam("boardId", boardFromPostResponse.getId())
                         .get("{boardId}")
                         .then()
-                        .spec(RestAssured.responseSpecification)
+                        .spec(responseSpecification)
                         .extract().as(TrelloBoard.class);
 
         assertThat(boardFromPostResponse.getName())
@@ -51,7 +51,16 @@ public class CreateBoardTest extends BaseTest{
                         .pathParam("boardId", boardFromPostResponse.getId())
                         .delete("{boardId}")
                         .then()
-                        .spec(RestAssured.responseSpecification)
+                        .spec(responseSpecification)
+                        .extract().response();
+
+        Response getDeletedBoardResponse =
+                given()
+                        .spec(boardSpec)
+                        .pathParam("boardId", boardFromPostResponse.getId())
+                        .get("{boardId}")
+                        .then()
+                        .statusCode(404)
                         .extract().response();
 
     }
