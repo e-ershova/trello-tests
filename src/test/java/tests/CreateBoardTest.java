@@ -1,64 +1,35 @@
 package tests;
 
-import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
-import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
-import io.restassured.filter.log.LogDetail;
-import io.restassured.filter.log.RequestLoggingFilter;
-import io.restassured.filter.log.ResponseLoggingFilter;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import models.board.TrelloBoard;
 import org.apache.commons.lang3.RandomStringUtils;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-public class CreateBoardTest {
+public class CreateBoardTest extends BaseTest{
 
     @ParameterizedTest(name = "New Trello Board is created with name {0}")
     @MethodSource("boardNames")
     public void test(String boardName) {
 
-        RestAssured.baseURI = "https://api.trello.com/1/";
-
-        RequestSpecification mainSpec = new RequestSpecBuilder()
-                .addQueryParam("key", "f910238aac21c3539355046cffe2cf07")
-                .addQueryParam("token", "d0eb3cbf161a54206c2d9b0369a36b240816bc0226b881dba4c4dc33b2b3a2dc")
-                .addFilters(Arrays.asList(new RequestLoggingFilter(LogDetail.BODY), new ResponseLoggingFilter(LogDetail.BODY), new AllureRestAssured()))
-                .build();
-
-        RequestSpecification boardSpec = new RequestSpecBuilder()
-                .addRequestSpecification(mainSpec)
-                .setBasePath("/boards")
-                .setContentType(ContentType.JSON)
-                .build();
-
-        ResponseSpecification responseSpec = new ResponseSpecBuilder()
-                .expectStatusCode(200)
-                .build();
-
-        Response createBoardResponse =
+        TrelloBoard boardFromPostResponse =
                 given()
                         .spec(boardSpec)
                         .queryParam("name", boardName)
                         .post()
                         .then()
-                        .spec(responseSpec)
-                        .extract().response();
-
-        TrelloBoard boardFromPostResponse = createBoardResponse.as(TrelloBoard.class);
+                        .spec(RestAssured.responseSpecification)
+                        .extract().as(TrelloBoard.class);
 
         TrelloBoard boardFromGetResponse =
                 given()
@@ -66,13 +37,23 @@ public class CreateBoardTest {
                         .pathParam("boardId", boardFromPostResponse.getId())
                         .get("{boardId}")
                         .then()
-                        .spec(responseSpec)
+                        .spec(RestAssured.responseSpecification)
                         .extract().as(TrelloBoard.class);
 
         assertThat(boardFromPostResponse.getName())
                 .as("Name from post response should be equal to name from get response and name from MethodSource")
                 .isEqualTo(boardFromGetResponse.getName())
                 .isEqualTo(boardName);
+
+        Response deleteBoardResponse =
+                given()
+                        .spec(boardSpec)
+                        .pathParam("boardId", boardFromPostResponse.getId())
+                        .delete("{boardId}")
+                        .then()
+                        .spec(RestAssured.responseSpecification)
+                        .extract().response();
+
     }
 
     static Stream<Arguments> boardNames() {
