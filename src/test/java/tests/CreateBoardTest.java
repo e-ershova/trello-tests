@@ -54,6 +54,15 @@ public class CreateBoardTest extends BaseTest{
                         .spec(RestAssured.responseSpecification)
                         .extract().response();
 
+      /*  Response getDeletedBoardResponse =
+                given()
+                        .spec(boardSpec)
+                        .pathParam("boardId", boardFromPostResponse.getId())
+                        .get("{boardId}")
+                        .then()
+                        .statusCode(404)
+                        .extract().response(); */
+
     }
 
     static Stream<Arguments> boardNames() {
