@@ -1,9 +1,5 @@
 package tests;
 
-import io.restassured.RestAssured;
-import io.restassured.builder.ResponseSpecBuilder;
-import io.restassured.response.Response;
-import io.restassured.specification.ResponseSpecification;
 import models.board.TrelloBoard;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -45,23 +41,31 @@ public class CreateBoardTest extends BaseTest{
                 .isEqualTo(boardFromGetResponse.getName())
                 .isEqualTo(boardName);
 
-        Response deleteBoardResponse =
                 given()
                         .spec(boardSpec)
                         .pathParam("boardId", boardFromPostResponse.getId())
                         .delete("{boardId}")
                         .then()
-                        .spec(responseSpecification)
-                        .extract().response();
+                        .spec(responseSpecification);
 
-        Response getDeletedBoardResponse =
                 given()
                         .spec(boardSpec)
                         .pathParam("boardId", boardFromPostResponse.getId())
                         .get("{boardId}")
                         .then()
-                        .statusCode(404)
-                        .extract().response();
+                        .statusCode(404);
+
+        given()
+                .spec(organizationSpec)
+                .pathParam("organizationId", boardFromPostResponse.getIdOrganization())
+                .delete("{organizationId}");
+
+        given()
+                .spec(organizationSpec)
+                .pathParam("organizationId", boardFromPostResponse.getIdOrganization())
+                .get("{organizationId}")
+                .then()
+                .statusCode(404);
 
     }
 

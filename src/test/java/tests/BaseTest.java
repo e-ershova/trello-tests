@@ -17,20 +17,28 @@ public class BaseTest {
     protected RequestSpecification authAndLogParams;
     protected RequestSpecification boardSpec;
     protected ResponseSpecification responseSpecification;
+    protected RequestSpecification organizationSpec;
 
     public BaseTest() {
         RestAssured.baseURI = "https://api.trello.com/1/";
 
         responseSpecification = new ResponseSpecBuilder().expectStatusCode(200).build();
+
         authAndLogParams = new RequestSpecBuilder()
                 .addQueryParam("key", "f910238aac21c3539355046cffe2cf07")
                 .addQueryParam("token", "d0eb3cbf161a54206c2d9b0369a36b240816bc0226b881dba4c4dc33b2b3a2dc")
                 .addFilters(Arrays.asList(new RequestLoggingFilter(LogDetail.BODY), new ResponseLoggingFilter(LogDetail.BODY), new AllureRestAssured()))
                 .build();
+
         boardSpec = new RequestSpecBuilder()
                 .addRequestSpecification(authAndLogParams)
                 .setBasePath("/boards")
                 .setContentType(ContentType.JSON)
+                .build();
+
+        organizationSpec = new RequestSpecBuilder()
+                .addRequestSpecification(authAndLogParams)
+                .setBasePath("/organizations")
                 .build();
     }
 

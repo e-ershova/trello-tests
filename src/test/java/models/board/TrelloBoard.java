@@ -3,8 +3,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import models.Limits;
 
-import java.util.Map;
-
 @Getter
 @Setter
 @Builder
@@ -24,7 +22,7 @@ public class TrelloBoard {
     private Boolean pinned;
     private String url;
     private String shortUrl;
-    private Prefs prefs;
+    private BoardPrefs prefs;
     private LabelNames labelNames;
     private Organization organization;
     private Limits limits;
