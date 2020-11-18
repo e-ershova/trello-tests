@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-public class Prefs {
+public class BoardPrefs {
     private String permissionLevel;
     private Boolean hideVotes;
     private String voting;

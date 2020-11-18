@@ -1,4 +1,4 @@
-package models.board;
+package models.organization;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.*;
