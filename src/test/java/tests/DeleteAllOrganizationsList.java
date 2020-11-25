@@ -3,27 +3,25 @@ package tests;
 import models.board.Organization;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Array;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
-public class DeleteAllOrganizations extends BaseTest {
+public class DeleteAllOrganizationsList extends BaseTest {
 
     @Test
     public void test() {
 
-        Organization[] organizations =
+        List<Organization> org =
                 given()
                         .when()
                         .spec(authAndLogParams)
                         .pathParam("id", "annachepkasova")
-
                         .get("/members/{id}/organizations")
+                        .jsonPath().getList(".", Organization.class);
 
-                        .as(Organization[].class);
+        for (Organization organization: org) {
 
-        for (int i = 0; i < Array.getLength(organizations); i++) {
-
-            String orgId = organizations[i].getId();
+            String orgId = organization.getId();
 
             given()
                     .spec(authAndLogParams)

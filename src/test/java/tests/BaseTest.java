@@ -12,14 +12,18 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 
 import java.util.Arrays;
+
 public class BaseTest {
 
+    protected ResponseSpecification responseSpecification;
     protected RequestSpecification authAndLogParams;
     protected RequestSpecification boardSpec;
-    protected ResponseSpecification responseSpecification;
     protected RequestSpecification organizationSpec;
+    protected RequestSpecification listSpec;
 
     public BaseTest() {
+
+
         RestAssured.baseURI = "https://api.trello.com/1/";
 
         responseSpecification = new ResponseSpecBuilder().expectStatusCode(200).build();
@@ -39,6 +43,12 @@ public class BaseTest {
         organizationSpec = new RequestSpecBuilder()
                 .addRequestSpecification(authAndLogParams)
                 .setBasePath("/organizations")
+                .build();
+
+        listSpec = new RequestSpecBuilder()
+                .addRequestSpecification(authAndLogParams)
+                .setBasePath("/lists")
+                .setContentType(ContentType.JSON)
                 .build();
     }
 
