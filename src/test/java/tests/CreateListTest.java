@@ -3,6 +3,7 @@ package tests;
 import models.board.TrelloBoard;
 import models.list.TrelloList;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -15,13 +16,13 @@ public class CreateListTest extends BaseTest {
 
     String randomBoard = RandomStringUtils.random(7, false, true);
     TrelloBoard boardFromPostResponse =
-            given()
-                    .spec(boardSpec)
-                    .queryParam("name", "boardForLists" + randomBoard)
-                    .post()
-                    .then()
-                    .spec(responseSpecification)
-                    .extract().as(TrelloBoard.class);
+                given()
+                        .spec(boardSpec)
+                        .queryParam("name", "boardForLists" + randomBoard)
+                        .post()
+                        .then()
+                        .spec(responseSpecification)
+                        .extract().as(TrelloBoard.class);
     String boardID = boardFromPostResponse.getId();
 
     @ParameterizedTest(name = "New Trello List is created with name {0}")
