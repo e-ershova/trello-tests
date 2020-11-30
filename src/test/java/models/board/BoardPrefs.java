@@ -22,7 +22,6 @@ public class BoardPrefs {
     private Boolean calendarFeedEnabled;
     private String background;
     private String backgroundImage;
-    private String backgroundImageScaled;
     private Boolean backgroundTile;
     private String backgroundBrightness;
     private String backgroundColor;

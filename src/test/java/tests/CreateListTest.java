@@ -13,20 +13,11 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 public class CreateListTest extends BaseTest {
 
-    String randomBoard = RandomStringUtils.random(7, false, true);
-    TrelloBoard boardFromPostResponse =
-            given()
-                    .spec(boardSpec)
-                    .queryParam("name", "boardForLists" + randomBoard)
-                    .post()
-                    .then()
-                    .spec(responseSpecification)
-                    .extract().as(TrelloBoard.class);
-    String boardID = boardFromPostResponse.getId();
+
 
     @ParameterizedTest(name = "New Trello List is created with name {0}")
     @MethodSource("listNames")
-    public void test(String listName) {
+    public void test(String listName, String boardID) {
 
         TrelloList listFromPostResponse =
                 given()
@@ -41,6 +32,17 @@ public class CreateListTest extends BaseTest {
 
     static Stream<Arguments> listNames() {
 
+        String randomBoard = RandomStringUtils.random(7, false, true);
+        TrelloBoard boardFromPostResponse =
+                given()
+                        .spec(boardSpec)
+                        .queryParam("name", "boardForLists" + randomBoard)
+                        .post()
+                        .then()
+                        .spec(responseSpecification)
+                        .extract().as(TrelloBoard.class);
+        String boardID = boardFromPostResponse.getId();
+
         String random = RandomStringUtils.random(7, false, true); //используем здесь
         // генератор случайной строки, чтобы имя каждый раз было уникальным
         String listName1 = "Trello List Name in English " + random;
@@ -50,10 +52,10 @@ public class CreateListTest extends BaseTest {
         //108 символов, если с пробелом и рандомом
 
         return Stream.of(
-                arguments(listName1),
-                arguments(listName2),
-                arguments(listName3),
-                arguments(listName4)
+                arguments(listName1, boardID),
+                arguments(listName2, boardID),
+                arguments(listName3, boardID),
+                arguments(listName4, boardID)
         );
     }
 }

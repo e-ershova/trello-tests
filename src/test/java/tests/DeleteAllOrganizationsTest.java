@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
-public class DeleteAllOrganizationsList extends BaseTest {
+public class DeleteAllOrganizationsTest extends BaseTest {
 
     @Test
     public void test() {
