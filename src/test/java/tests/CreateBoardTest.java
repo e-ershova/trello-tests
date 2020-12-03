@@ -41,19 +41,19 @@ public class CreateBoardTest extends BaseTest{
                 .isEqualTo(boardFromGetResponse.getName())
                 .isEqualTo(boardName);
 
-                given()
-                        .spec(boardSpec)
-                        .pathParam("boardId", boardFromPostResponse.getId())
-                        .delete("{boardId}")
-                        .then()
-                        .spec(responseSpecification);
+        given()
+                .spec(boardSpec)
+                .pathParam("boardId", boardFromPostResponse.getId())
+                .delete("{boardId}")
+                .then()
+                .spec(responseSpecification);
 
-                given()
-                        .spec(boardSpec)
-                        .pathParam("boardId", boardFromPostResponse.getId())
-                        .get("{boardId}")
-                        .then()
-                        .statusCode(404);
+        given()
+                .spec(boardSpec)
+                .pathParam("boardId", boardFromPostResponse.getId())
+                .get("{boardId}")
+                .then()
+                .statusCode(404);
 
         given()
                 .spec(organizationSpec)
