@@ -9,6 +9,7 @@ import models.Limits;
 @Builder
 @With
 @NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TrelloCard {

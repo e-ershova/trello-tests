@@ -43,6 +43,7 @@ public class CreateCardTest extends BaseTest {
                 .as("Name from post response should be equal to name from get response and name from MethodSource")
                 .isEqualTo(cardFromGetResponse.getName())
                 .isEqualTo(cardName);
+        
     }
 
     static Stream<Arguments> cardNames() {
