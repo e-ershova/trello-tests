@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 public class CreateListTest extends BaseTest {
 
@@ -28,6 +29,21 @@ public class CreateListTest extends BaseTest {
                         .then()
                         .spec(responseSpecification)
                         .extract().as(TrelloList.class);
+
+        TrelloList listFromGetResponse =
+                given()
+                        .spec(listSpec)
+                        .pathParam("id", listFromPostResponse.getId())
+                        .get("{id}")
+                        .then()
+                        .spec(responseSpecification)
+                        .extract().as(TrelloList.class);
+
+        assertThat(listFromPostResponse.getName())
+                .as("Name from post response should be equal to name from get response and name from MethodSource")
+                .isEqualTo(listFromGetResponse.getName())
+                .isEqualTo(listName);
+
     }
 
     static Stream<Arguments> listNames() {

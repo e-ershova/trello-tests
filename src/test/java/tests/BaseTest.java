@@ -29,6 +29,12 @@ public class BaseTest {
             .setContentType(ContentType.JSON)
             .build();
 
+    protected static RequestSpecification cardSpec = new RequestSpecBuilder()
+            .addRequestSpecification(authAndLogParams)
+            .setBasePath("/cards")
+            .setContentType(ContentType.JSON)
+            .build();
+
     protected static RequestSpecification organizationSpec = new RequestSpecBuilder()
                 .addRequestSpecification(authAndLogParams)
                 .setBasePath("/organizations")
