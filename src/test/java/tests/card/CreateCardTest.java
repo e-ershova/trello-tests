@@ -1,4 +1,4 @@
-package tests;
+package tests.card;
 
 import models.board.TrelloBoard;
 import models.card.TrelloCard;
@@ -7,6 +7,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import tests.BaseTest;
 
 import java.util.stream.Stream;
 

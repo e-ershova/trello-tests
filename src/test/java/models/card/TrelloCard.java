@@ -16,4 +16,5 @@ public class TrelloCard {
 
     private String id;
     private String name;
+    private String idList;
 }
