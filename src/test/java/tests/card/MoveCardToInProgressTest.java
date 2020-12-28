@@ -1,10 +1,13 @@
 package tests.card;
 
+import models.board.Organization;
 import models.board.TrelloBoard;
 import models.card.TrelloCard;
 import models.list.TrelloList;
 import org.junit.jupiter.api.Test;
 import tests.BaseTest;
+
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,6 +40,8 @@ public class MoveCardToInProgressTest extends BaseTest {
                         .spec(responseSpecification)
                         .extract().as(TrelloList.class);
 
+        String toDoListID = toDo.getId();
+
         //создаем список In Progress
         TrelloList inProgress =
                 given()
@@ -48,7 +53,6 @@ public class MoveCardToInProgressTest extends BaseTest {
                         .spec(responseSpecification)
                         .extract().as(TrelloList.class);
 
-        String toDoListID = toDo.getId();
         String inProgressListID = inProgress.getId();
 
         //создаем карточку в списке To Do
@@ -90,5 +94,34 @@ public class MoveCardToInProgressTest extends BaseTest {
                 .as("List of updated card should be In Progress")
                 .isEqualTo(inProgressListID);
 
+        //проверяем, что в ToDoList нет карточек
+        List<TrelloCard> cardsFromToDoList =
+                given()
+                        .spec(listSpec)
+                        .pathParam("id", toDoListID)
+                        .get("{id}/cards")
+                        .jsonPath().getList(".", TrelloCard.class);
+
+        for (TrelloCard trelloCard: cardsFromToDoList) {
+
+            assertThat(trelloCard.getId())
+                    .as("There should be no cards in ToDo list")
+                    .isNullOrEmpty();
+        }
+
+        //проверяем, что наша карточка в списке InProgress
+        List<TrelloCard> cardsFromInProgressList =
+                given()
+                        .spec(listSpec)
+                        .pathParam("id", inProgressListID)
+                        .get("{id}/cards")
+                        .jsonPath().getList(".", TrelloCard.class);
+
+        for (TrelloCard trelloCard: cardsFromInProgressList) {
+
+            assertThat(trelloCard.getId())
+                    .as("The card should be in InProgress list")
+                    .isEqualTo(cardID);
+        }
     }
 }

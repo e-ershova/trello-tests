@@ -4,6 +4,9 @@ import models.card.TrelloCard;
 import models.list.TrelloList;
 import org.junit.jupiter.api.Test;
 import tests.BaseTest;
+
+import java.util.List;
+
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -123,6 +126,50 @@ public class MoveCardToDoneTest extends BaseTest  {
         assertThat(getCardList2.getId())
                 .as("List of updated card should be Done")
                 .isEqualTo(doneListID);
-    }
 
+        //проверяем, что в ToDoList нет карточек
+        List<TrelloCard> cardsFromToDoList =
+                given()
+                        .spec(listSpec)
+                        .pathParam("id", toDoListID)
+                        .get("{id}/cards")
+                        .jsonPath().getList(".", TrelloCard.class);
+
+        for (TrelloCard trelloCard: cardsFromToDoList) {
+
+            assertThat(trelloCard.getId())
+                    .as("There should be no cards in ToDo list")
+                    .isNullOrEmpty();
+        }
+
+        //проверяем, что в InProgress нет карточек
+        List<TrelloCard> cardsFromInProgressListID =
+                given()
+                        .spec(listSpec)
+                        .pathParam("id", inProgressListID)
+                        .get("{id}/cards")
+                        .jsonPath().getList(".", TrelloCard.class);
+
+        for (TrelloCard trelloCard: cardsFromInProgressListID) {
+
+            assertThat(trelloCard.getId())
+                    .as("There should be no cards in InProgress list")
+                    .isNullOrEmpty();
+        }
+
+        //проверяем, что наша карточка в списке Done
+        List<TrelloCard> cardsFromDoneList =
+                given()
+                        .spec(listSpec)
+                        .pathParam("id", doneListID)
+                        .get("{id}/cards")
+                        .jsonPath().getList(".", TrelloCard.class);
+
+        for (TrelloCard trelloCard: cardsFromDoneList) {
+
+            assertThat(trelloCard.getId())
+                    .as("The card should be in Done list")
+                    .isEqualTo(cardID);
+        }
+    }
 }

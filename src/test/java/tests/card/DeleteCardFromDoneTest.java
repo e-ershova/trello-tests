@@ -4,6 +4,9 @@ import models.card.TrelloCard;
 import models.list.TrelloList;
 import org.junit.jupiter.api.Test;
 import tests.BaseTest;
+
+import java.util.List;
+
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -136,12 +139,57 @@ public class DeleteCardFromDoneTest extends BaseTest {
                         .then()
                         .spec(responseSpecification);
 
-        //проверяем, что карточка удалилась
+        //проверяем, что карточка удалилась (т.е. ее не найти по ID)
                 given()
                         .spec(cardSpec)
                         .pathParam("id", cardID)
                         .get("{id}")
                         .then()
                         .statusCode(404);
+
+        //проверяем, что в ToDoList нет карточек
+        List<TrelloCard> cardsFromToDoList =
+                given()
+                        .spec(listSpec)
+                        .pathParam("id", toDoListID)
+                        .get("{id}/cards")
+                        .jsonPath().getList(".", TrelloCard.class);
+
+        for (TrelloCard trelloCard: cardsFromToDoList) {
+
+            assertThat(trelloCard.getId())
+                    .as("There should be no cards in ToDo list")
+                    .isNullOrEmpty();
+        }
+
+        //проверяем, что в InProgress нет карточек
+        List<TrelloCard> cardsFromInProgressListID =
+                given()
+                        .spec(listSpec)
+                        .pathParam("id", inProgressListID)
+                        .get("{id}/cards")
+                        .jsonPath().getList(".", TrelloCard.class);
+
+        for (TrelloCard trelloCard: cardsFromInProgressListID) {
+
+            assertThat(trelloCard.getId())
+                    .as("There should be no cards in InProgress list")
+                    .isNullOrEmpty();
+        }
+
+        //проверяем, что в Done нет карточек
+        List<TrelloCard> cardsFromDoneListID =
+                given()
+                        .spec(listSpec)
+                        .pathParam("id", doneListID)
+                        .get("{id}/cards")
+                        .jsonPath().getList(".", TrelloCard.class);
+
+        for (TrelloCard trelloCard: cardsFromDoneListID) {
+
+            assertThat(trelloCard.getId())
+                    .as("There should be no cards in Done list")
+                    .isNullOrEmpty();
+        }
     }
 }
