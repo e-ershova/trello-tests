@@ -1,5 +1,6 @@
 package tests;
 
+import io.qameta.allure.Step;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
@@ -9,8 +10,11 @@ import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
+import models.board.TrelloBoard;
 
 import java.util.Arrays;
+
+import static io.restassured.RestAssured.given;
 
 public class BaseTest {
 
@@ -45,5 +49,32 @@ public class BaseTest {
             .setBasePath("/lists")
             .setContentType(ContentType.JSON)
             .build();
+
+    @Step("Get board with id {0}")
+    protected TrelloBoard getBoard(String boardId) {
+        return given()
+                .spec(boardSpec(boardId))
+                .get("{boardId}")
+                .then()
+                .spec(responseSpecification)
+                .extract().as(TrelloBoard.class);
+    }
+
+    @Step("Delete board with id {0}")
+    protected void deleteBoard(String boardId) {
+        given()
+                .spec(boardSpec(boardId))
+                .delete("{boardId}")
+                .then()
+                .spec(responseSpecification);
+    }
+
+    private RequestSpecification boardSpec(String boardId) {
+        return boardSpec
+                .pathParam("boardId", boardId);
+        
+    }
+
+
 
 }

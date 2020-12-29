@@ -27,26 +27,21 @@ public class CreateBoardTest extends BaseTest{
                         .spec(responseSpecification)
                         .extract().as(TrelloBoard.class);
 
-        TrelloBoard boardFromGetResponse =
-                given()
+        TrelloBoard boardFromGetResponse = getBoard(boardFromPostResponse.getId());
+             /*   given()
                         .spec(boardSpec)
                         .pathParam("boardId", boardFromPostResponse.getId())
                         .get("{boardId}")
                         .then()
                         .spec(responseSpecification)
-                        .extract().as(TrelloBoard.class);
+                        .extract().as(TrelloBoard.class);*/
 
         assertThat(boardFromPostResponse.getName())
                 .as("Name from post response should be equal to name from get response and name from MethodSource")
                 .isEqualTo(boardFromGetResponse.getName())
                 .isEqualTo(boardName);
 
-        given()
-                .spec(boardSpec)
-                .pathParam("boardId", boardFromPostResponse.getId())
-                .delete("{boardId}")
-                .then()
-                .spec(responseSpecification);
+        deleteBoard(boardFromGetResponse.getId());
 
         given()
                 .spec(boardSpec)
